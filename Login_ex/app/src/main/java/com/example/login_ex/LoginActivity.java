@@ -14,10 +14,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore userInfoDB = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                                 ToastMessage("로그인에 성공했습니다!");
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
-                                FirebaseUser user = mAuth.getCurrentUser();
-                            } else {
+                            }else {
                                 ToastMessage("아이디 또는 비밀번호가 일치하지 않습니다!!");
                             }
                         }
