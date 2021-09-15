@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.ZoneId;
@@ -43,25 +45,25 @@ public class Member_InitInfo extends AppCompatActivity {
         });
     }
 
-    private void initInfo(){
-        String name = ((EditText)findViewById(R.id.nameEditText)).getText().toString();
-        String nickname = ((EditText)findViewById(R.id.nicknameEditText)).getText().toString();
-        String birth = ((EditText)findViewById(R.id.dateOfBirthEditText)).getText().toString();
-        String phoneNumber = ((EditText)findViewById(R.id.phoneNumberEditText)).getText().toString();
+    private void initInfo() {
+        String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
+        String nickname = ((EditText) findViewById(R.id.nicknameEditText)).getText().toString();
+        String birth = ((EditText) findViewById(R.id.dateOfBirthEditText)).getText().toString();
+        String phoneNumber = ((EditText) findViewById(R.id.phoneNumberEditText)).getText().toString();
 
-        if (name.length() > 1 && nickname.length() > 2 && birth.length() > 7 && phoneNumber.length() > 10 ) {
+        if (name.length() > 1 && nickname.length() > 2 && birth.length() > 7 && phoneNumber.length() > 10) {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            FirebaseFirestore userInfoDB = FirebaseFirestore.getInstance();
+            DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
 
             Member_Info memberInfo = new Member_Info(name, nickname, birth, phoneNumber);
 
-            if (user != null){
-                userInfoDB.collection("Users").document(user.getUid()).set(memberInfo)
+            if (user != null) {
+                userDB.child("users").child(user.getUid()).setValue(memberInfo)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                ToastMessage("회원 정보 등록에 성공했습니다!");
+                                ToastMessage("정보 등록 완료");
                                 Intent intent = new Intent(Member_InitInfo.this, MainActivity.class);
                                 startActivity(intent);
                             }
@@ -69,7 +71,7 @@ public class Member_InitInfo extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                ToastMessage("회원 정보 등록에 실패했습니다!!");
+                                ToastMessage("정보 등록 실패");
                             }
                         });
             }

@@ -15,15 +15,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseFirestore userInfoDB = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     private void login(){
         String email = ((EditText) findViewById(R.id.emailEditText)).getText().toString();
         String password = ((EditText) findViewById(R.id.passwordEditText)).getText().toString();
+        DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
         // 로그인 정보 미입력시
         if (email.length() > 0 && password.length() > 0){
             // Firebase Auth 정보에 사용자가 입력한 이메일과 패스워드가 일치하는지 확인
@@ -77,8 +80,21 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 ToastMessage("로그인에 성공했습니다!");
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
+                                userDB.child("users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                        if (!task.isSuccessful()) {
+                                            Intent intent = new Intent(LoginActivity.this, Member_InitInfo.class);
+                                            startActivity(intent);
+                                        }
+                                        else {
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            intent.putExtra("password",password);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
+
                             }else {
                                 ToastMessage("아이디 또는 비밀번호가 일치하지 않습니다!!");
                             }

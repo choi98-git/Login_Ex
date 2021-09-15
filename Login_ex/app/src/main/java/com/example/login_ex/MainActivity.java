@@ -1,25 +1,18 @@
 package com.example.login_ex;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    String password = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Intent intent = getIntent();
+       password = intent.getStringExtra("password");
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
         findViewById(R.id.initInfoButton).setOnClickListener(onClickListener);
+        findViewById(R.id.updatePasswordButton).setOnClickListener(onClickListener);
+        findViewById(R.id.unregisterButton).setOnClickListener(onClickListener);
 
     }
 
@@ -39,11 +36,19 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.logoutButton:
-                    GoLogin();
+                    Logout();
                     break;
 
                 case R.id.initInfoButton:
                     GoInitInfo();
+                    break;
+
+                case R.id.updatePasswordButton:
+                    UpgradePassWord();
+                    break;
+
+                case R.id.unregisterButton:
+                    Unregister();
                     break;
             }
         }
@@ -53,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message,Toast.LENGTH_SHORT).show();
     }
 
-    private void GoLogin(){
+
+
+    private void Logout(){
+        mAuth.signOut();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
@@ -62,4 +70,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, Member_InitInfo.class);
         startActivity(intent);
     }
+
+    private void UpgradePassWord(){
+        Intent intent = new Intent(MainActivity.this, Check_Password.class);
+        intent.putExtra("password",password);
+        startActivity(intent);
+    }
+
+    private void Unregister(){
+
+    }
+
 }
