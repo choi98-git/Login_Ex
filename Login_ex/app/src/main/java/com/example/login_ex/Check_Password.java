@@ -52,7 +52,7 @@ public class Check_Password extends AppCompatActivity {
             public void onClick(View v) {
                 if (passwordEditText.length() > 0) {
                     if (passwordEditText.getText().toString().equals(password)) {
-                        Intent intent1 = new Intent(Check_Password.this, UpdatePassword.class);
+                        Intent intent1 = new Intent(Check_Password.this, UpdateUserInfo.class);
                         startActivity(intent1);
                     } else {
                         ToastMessage("입력하신 비밀번호가 틀렸습니다!!");

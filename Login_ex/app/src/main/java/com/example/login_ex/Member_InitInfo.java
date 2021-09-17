@@ -3,6 +3,7 @@ package com.example.login_ex;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.time.ZoneId;
 
 public class Member_InitInfo extends AppCompatActivity {
+    private FirebaseAuth mAuth;
     EditText nicknameEdit;
     Button initInfoButton;
 
@@ -35,7 +37,7 @@ public class Member_InitInfo extends AppCompatActivity {
         setContentView(R.layout.activity_input_info);
         initInfoButton = (Button) findViewById(R.id.initInfoButton);
         nicknameEdit = (EditText) findViewById(R.id.nicknameEditText);
-
+        mAuth = FirebaseAuth.getInstance();
 
         initInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +65,7 @@ public class Member_InitInfo extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                userProfile(name);
                                 ToastMessage("정보 등록 완료");
                                 Intent intent = new Intent(Member_InitInfo.this, MainActivity.class);
                                 startActivity(intent);
@@ -78,6 +81,23 @@ public class Member_InitInfo extends AppCompatActivity {
         }
     }
 
+    // 프로필 이름 설정
+    private void userProfile(String name){
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null){
+            UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(name.trim()).build();
+
+            user.updateProfile(profileUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Log.d("Testing", "User Profile Updated");
+                    }
+                }
+            });
+        }
+    }
     private void ToastMessage(String message){
         Toast.makeText(this, message,Toast.LENGTH_SHORT).show();
     }

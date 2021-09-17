@@ -26,8 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.logoutButton).setOnClickListener(onClickListener);
         findViewById(R.id.initInfoButton).setOnClickListener(onClickListener);
-        findViewById(R.id.updatePasswordButton).setOnClickListener(onClickListener);
-        findViewById(R.id.unregisterButton).setOnClickListener(onClickListener);
+        findViewById(R.id.updateUserInfo).setOnClickListener(onClickListener);
 
     }
 
@@ -43,13 +42,10 @@ public class MainActivity extends AppCompatActivity {
                     GoInitInfo();
                     break;
 
-                case R.id.updatePasswordButton:
-                    UpgradePassWord();
+                case R.id.updateUserInfo:
+                    CheckPassWord();
                     break;
 
-                case R.id.unregisterButton:
-                    Unregister();
-                    break;
             }
         }
     };
@@ -71,14 +67,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void UpgradePassWord(){
+    private void CheckPassWord(){
         Intent intent = new Intent(MainActivity.this, Check_Password.class);
         intent.putExtra("password",password);
         startActivity(intent);
-    }
-
-    private void Unregister(){
-
     }
 
 }

@@ -25,7 +25,6 @@ import com.google.firebase.firestore.Source;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
         findViewById(R.id.singUpButton).setOnClickListener(onClickListener);
         findViewById(R.id.loginButton).setOnClickListener(onClickListener);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
 
@@ -79,21 +72,20 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                FirebaseUser user = mAuth.getCurrentUser();
                                 ToastMessage("로그인에 성공했습니다!");
-                                userDB.child("users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                        if (!task.isSuccessful()) {
+                                {
+                                    if ( user != null){
+                                        if(user.getDisplayName() == null){
                                             Intent intent = new Intent(LoginActivity.this, Member_InitInfo.class);
                                             startActivity(intent);
-                                        }
-                                        else {
+                                        }else {
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                             intent.putExtra("password",password);
                                             startActivity(intent);
                                         }
                                     }
-                                });
+                                };
 
                             }else {
                                 ToastMessage("아이디 또는 비밀번호가 일치하지 않습니다!!");
